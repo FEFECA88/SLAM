@@ -1,0 +1,31 @@
+function [lmk, J_lmk_rob, J_lmk_y] = inv_observe(rob, y)
+%rob=posició del robot
+%Lmk= posició land mark
+%tenim coordenades cartesianes i volem polars
+
+%volem el landmark en coordenades cartesianes:
+[lmkrob, J_lmkrob_y] = p2c(y);
+
+[lmk, J_lmk_rob, J_lmk_lmkrob] = fromFrame2D(rob, lmkrob);
+%ja tenim el landmark en coordenades del robot
+
+
+
+%regla de la cadena, començar per "y" i acabar per "rob"
+%J_y_rob = J_y_#### * J_####_rob
+J_y_rob = J_y_lmkrob * J_lmkrob_rob;
+J_y_lmk = J_y_lmkrob * J_lmkrob_lmk;
+end
+
+%Comprobació
+function f()
+%%
+syms x y th px py real
+r = [x;y;th];
+p = [px;py];
+
+[yy, J_yy_r, J_yy_p] = observe(r,p);
+simplify(jacobian(yy,r) - J_yy_r)
+simplify(jacobian(yy,p) - J_yy_p)
+end
+%dona matrius ZERO
